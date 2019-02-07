@@ -2,10 +2,10 @@
 #' reconstructions
 #'
 #' @param x, y marginal probabilities; generally the \code{states} element from
-#' a \code{rayDISC} object
+#' a \code{rayDISC} object.
 #' @param include.tips [optional] logical indicating whether or not joint
 #' probabilities for terminal nodes should be included in output. Default is
-#' \code{TRUE}
+#' \code{TRUE}.
 #'
 #' @references a list with a \code{states} matrix of joint probabilities for
 #' ancestral state combinations at internal nodes and if \code{include.tips =

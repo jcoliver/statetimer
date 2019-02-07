@@ -1,6 +1,6 @@
 #' Create a data frame object for character state through time plot
 #'
-#' @param tree a phylogenetic tree object
+#' @param tree a phylogenetic tree object.
 #' @param anc.recon list with marginal ancestral state probabilities including
 #' \code{states} and \code{tip.states} matrices. Can be a \code{rayDISC} object.
 #' @param state.index integer the index representing the state of interest in
@@ -9,7 +9,7 @@
 #' @param contemporary.age numeric cutoff for determining age of nodes to
 #' consider as contemporary. Defaults to 1.0e-10.
 #' @return data.frame with \code{node.age} and \code{lineage.count} columns for
-#' plotting the character state of interest through time
+#' plotting the character state of interest through time.
 stt_data <- function(tree, anc.recon, state.index = 1, contemporary.age = 1.0e-10) {
   # Want a table with:
   # Node    Node.age    marg.state.prob

@@ -12,7 +12,8 @@ LazyData: true
 Imports:
     ape
 Suggests:
-    corHMM
+    corHMM,
     ggplot2
 URL: https://github.com/jcoliver/statetimer
 BugReports: https://github.com/jcoliver/statetimer/issues
+RoxygenNote: 6.1.1
