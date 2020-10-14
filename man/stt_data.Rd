@@ -4,23 +4,23 @@
 \alias{stt_data}
 \title{Create a data frame object for character state through time plot}
 \usage{
-stt_data(tree, anc.recon, state.index = 1, contemporary.age = 1e-10)
+stt_data(tree, anc_recon, state_index = 1, contemporary_age = 1e-10)
 }
 \arguments{
 \item{tree}{a phylogenetic tree object.}
 
-\item{anc.recon}{list with marginal ancestral state probabilities including
+\item{anc_recon}{list with marginal ancestral state probabilities including
 \code{states} and \code{tip.states} matrices. Can be a \code{rayDISC} object.}
 
-\item{state.index}{integer the index representing the state of interest in
+\item{state_index}{integer the index representing the state of interest in
 the \code{rayDISC$tip.states} and \code{rayDISC$states} objects. Default is
 1.}
 
-\item{contemporary.age}{numeric cutoff for determining age of nodes to
+\item{contemporary_age}{numeric cutoff for determining age of nodes to
 consider as contemporary. Defaults to 1.0e-10.}
 }
 \value{
-data.frame with \code{node.age} and \code{lineage.count} columns for
+data.frame with \code{node_age} and \code{lineage_count} columns for
 plotting the character state of interest through time.
 }
 \description{

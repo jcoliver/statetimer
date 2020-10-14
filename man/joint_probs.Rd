@@ -5,23 +5,22 @@
 \title{Calculate all joint probabilities from a pair of ancestral state
 reconstructions}
 \usage{
-joint_probs(x, y, include.tips = TRUE)
+joint_probs(x, y, include_tips = TRUE)
 }
 \arguments{
-\item{x, }{y marginal probabilities; generally the \code{states} element from
+\item{x, y}{marginal probabilities; generally the \code{states} element from
 a \code{rayDISC} object.}
 
-\item{include.tips}{[optional] logical indicating whether or not joint
-probabilities for terminal nodes should be included in output. Default is
-\code{TRUE}.}
+\item{include_tips}{logical indicating whether or not joint probabilities
+for terminal nodes should be included in output.}
+}
+\value{
+a list with a \code{states} matrix of joint probabilities for
+ancestral state combinations at internal nodes and if \code{include_tips =
+TRUE}, a \code{tip_states} matrix of joint probabilities of the state
+combination at the terminal nodes.
 }
 \description{
 Calculate all joint probabilities from a pair of ancestral state
 reconstructions
-}
-\references{
-a list with a \code{states} matrix of joint probabilities for
-ancestral state combinations at internal nodes and if \code{include.tips =
-TRUE}, a \code{tip.states} matrix of joint probabilities of the state
-combination at the terminal nodes.
 }

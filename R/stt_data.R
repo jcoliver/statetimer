@@ -1,18 +1,22 @@
 #' Create a data frame object for character state through time plot
 #'
 #' @param tree a phylogenetic tree object.
-#' @param anc.recon list with marginal ancestral state probabilities including
+#' @param anc_recon list with marginal ancestral state probabilities including
 #' \code{states} and \code{tip.states} matrices. Can be a \code{rayDISC} object.
-#' @param state.index integer the index representing the state of interest in
+#' @param state_index integer the index representing the state of interest in
 #' the \code{rayDISC$tip.states} and \code{rayDISC$states} objects. Default is
 #' 1.
-#' @param contemporary.age numeric cutoff for determining age of nodes to
+#' @param contemporary_age numeric cutoff for determining age of nodes to
 #' consider as contemporary. Defaults to 1.0e-10.
-#' @return data.frame with \code{node.age} and \code{lineage.count} columns for
+#'
+#' @return data.frame with \code{node_age} and \code{lineage_count} columns for
 #' plotting the character state of interest through time.
-stt_data <- function(tree, anc.recon, state.index = 1, contemporary.age = 1.0e-10) {
+#'
+#' @importFrom ape node.depth.edgelength
+#' @export
+stt_data <- function(tree, anc_recon, state_index = 1, contemporary_age = 1.0e-10) {
   # Want a table with:
-  # Node    Node.age    marg.state.prob
+  # Node    node_age    marg_state_prob
   # So we start by identifying which nodes are terminals and which are internals
   internals <- unique(tree$edge[order(tree$edge[, 1]), 1])
   terminals <- base::setdiff(x = tree$edge[, 2], y = internals)
@@ -21,44 +25,44 @@ stt_data <- function(tree, anc.recon, state.index = 1, contemporary.age = 1.0e-1
   # Data frame we'll use for states
   # Calculate node depth, but convert to node age (ape::node.depth.edgelength
   # calculate depth starting from the *root*, so root depth = 0).
-  age.state.df <- data.frame(node = c(terminals, internals),
-                             node.age = max(node.depth.edgelength(phy = tree)) - node.depth.edgelength(phy = tree))
+  age_state_df <- data.frame(node = c(terminals, internals),
+                             node_age = max(ape::node.depth.edgelength(phy = tree)) - ape::node.depth.edgelength(phy = tree))
 
   # Want to add the marginal probabilities of the state of interest
-  age.state.df$marg.state.prob <- c(anc.recon$tip.states[, state.index],
-                                    anc.recon$states[, state.index])
+  age_state_df$marg_state_prob <- c(anc_recon$tip.states[, state_index],
+                                    anc_recon$states[, state_index])
 
   # Reverse order of node age, we will be doing calculations starting with the
   # youngest (i.e. contemporary) nodes first
-  age.state.df <- age.state.df[rev(order(age.state.df$node.age)), ]
+  age_state_df <- age_state_df[rev(order(age_state_df$node_age)), ]
 
   # Column to store count of lineages with state of interest
-  age.state.df$lineage.count <- NA
+  age_state_df$lineage_count <- NA
 
-  for (i in (nrow(age.state.df)):1) {
-    if (i == nrow(age.state.df)) {
+  for (i in (nrow(age_state_df)):1) {
+    if (i == nrow(age_state_df)) {
       # Looking at last (i.e. youngest) node, which shouldn't have any
       # descendents; initialize the sum of probabilities with marginal
       # probability at that (terminal) node
-      age.state.df$lineage.count[i] <- age.state.df$marg.state.prob[i]
+      age_state_df$lineage_count[i] <- age_state_df$marg_state_prob[i]
     } else {
       # Not the youngest node, so we already have a running tally in the
       # next row (i + 1) of the data frame; update accordingly
-      node.i <- age.state.df$node[i]
-      sum.marg <- 0
+      node_i <- age_state_df$node[i]
+      sum_marg <- 0
       # Find all descendants of that node (if any)
-      descendents.i <- tree$edge[tree$edge[,1] == node.i, 2]
-      if (length(descendents.i) > 0) {
+      descendents_i <- tree$edge[tree$edge[,1] == node_i, 2]
+      if (length(descendents_i) > 0) {
         # Sum the marginal probabilities for those descendants
-        sum.marg <- sum(age.state.df$marg.state.prob[age.state.df$node %in% descendents.i])
+        sum_marg <- sum(age_state_df$marg_state_prob[age_state_df$node %in% descendents_i])
       }
 
       # Find marginal probability of node i
-      node.i.marg <- age.state.df$marg.state.prob[age.state.df$node == node.i]
+      node_i_marg <- age_state_df$marg_state_prob[age_state_df$node == node_i]
 
       # Calculate amount to change our tally of descendants
-      change <- -sum.marg + node.i.marg
-      age.state.df$lineage.count[i] <- age.state.df$lineage.count[i + 1] + change
+      change <- -sum_marg + node_i_marg
+      age_state_df$lineage_count[i] <- age_state_df$lineage_count[i + 1] + change
     }
   }
 
@@ -69,15 +73,15 @@ stt_data <- function(tree, anc.recon, state.index = 1, contemporary.age = 1.0e-1
   # nodes
 
   # (2) identify those contemporary rows
-  contemporary.df <- age.state.df[age.state.df$node.age <= contemporary.age, ]
+  contemporary_df <- age_state_df[age_state_df$node_age <= contemporary_age, ]
   # (3) find the max value from those
-  contemporary.point <- max(contemporary.df$lineage.count)
+  contemporary_point <- max(contemporary_df$lineage_count)
   # (4) drop all contemporary rows
-  plot.age.states <- age.state.df[age.state.df$node.age > contemporary.age, ]
+  plot_age_states <- age_state_df[age_state_df$node_age > contemporary_age, ]
   # (5) add a single entry to represent all contemporary nodes
-  plot.age.states[nrow(plot.age.states) + 1, ] <- NA
-  plot.age.states$lineage.count[nrow(plot.age.states)] <- contemporary.point
-  plot.age.states$node.age[nrow(plot.age.states)] <- contemporary.age
+  plot_age_states[nrow(plot_age_states) + 1, ] <- NA
+  plot_age_states$lineage_count[nrow(plot_age_states)] <- contemporary_point
+  plot_age_states$node_age[nrow(plot_age_states)] <- contemporary_age
 
-  return(plot.age.states)
+  return(plot_age_states)
 }
