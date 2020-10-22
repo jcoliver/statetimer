@@ -1,8 +1,10 @@
 #' Create a data frame object for character state through time plot
 #'
 #' @param tree a phylogenetic tree object.
-#' @param anc_recon list with marginal ancestral state probabilities including
-#' \code{states} and \code{tip.states} matrices. Can be a \code{rayDISC} object.
+#' @param anc_states matrix of ancestral state probabilities, generally the
+#' \code{states} element of a \code{rayDISC} object.
+#' @param tip_states matrix of states for tip taxa, can be the \code{tip.states}
+#' element of a \code{rayDISC} object.
 #' @param state_index integer the index representing the state of interest in
 #' the \code{rayDISC$tip.states} and \code{rayDISC$states} objects. Default is
 #' 1.
@@ -14,7 +16,7 @@
 #'
 #' @importFrom ape node.depth.edgelength
 #' @export
-stt_data <- function(tree, anc_recon, state_index = 1, contemporary_age = 1.0e-10) {
+stt_data <- function(tree, anc_states, tip_states, state_index = 1, contemporary_age = 1.0e-10) {
   # Want a table with:
   # Node    node_age    marg_state_prob
   # So we start by identifying which nodes are terminals and which are internals
@@ -29,8 +31,8 @@ stt_data <- function(tree, anc_recon, state_index = 1, contemporary_age = 1.0e-1
                              node_age = max(ape::node.depth.edgelength(phy = tree)) - ape::node.depth.edgelength(phy = tree))
 
   # Want to add the marginal probabilities of the state of interest
-  age_state_df$marg_state_prob <- c(anc_recon$tip.states[, state_index],
-                                    anc_recon$states[, state_index])
+  age_state_df$marg_state_prob <- c(tip_states[, state_index],
+                                    anc_states[, state_index])
 
   # Reverse order of node age, we will be doing calculations starting with the
   # youngest (i.e. contemporary) nodes first

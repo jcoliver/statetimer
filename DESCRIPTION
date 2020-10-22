@@ -1,7 +1,7 @@
 Package: statetimer
 Type: Package
 Title: Utilities for Creating States through Time Plots
-Version: 0.1.0
+Version: 0.1.2
 Authors@R: person("Jeffrey C.", "Oliver", email = "jcoliver@email.arizona.edu",
     role = c("aut", "cre"))
 Description: More about what it does (maybe more than one line)
