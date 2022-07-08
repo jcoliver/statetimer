@@ -13,7 +13,10 @@ Imports:
     ape
 Suggests:
     corHMM,
-    ggplot2
+    ggplot2,
+    knitr,
+    rmarkdown
 URL: https://github.com/jcoliver/statetimer
 BugReports: https://github.com/jcoliver/statetimer/issues
 RoxygenNote: 7.1.1
+VignetteBuilder: knitr
