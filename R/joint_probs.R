@@ -2,13 +2,10 @@
 #' reconstructions
 #'
 #' @param x,y matrices of marginal probabilities for ancestral states;
-#' generally the \code{states} element from a \code{rayDISC} object.
+#' generally the \code{states} element from a \code{corHMM} object.
 #' @param x_tips,y_tips matrices of tip states; generally the \code{tip.states}
-#' element of a \code{rayDISC} object. If included, output will
+#' element of a \code{corHMM} object. If included, output will
 #' include the joint probabilities for terminal nodes
-#'
-#' @param include_tips logical indicating whether or not joint probabilities
-#' for terminal nodes should be included in output. \strong{DEPRECATED}
 #'
 #' @returns a list with a \code{states} matrix of joint probabilities for
 #' ancestral state combinations at internal nodes and if \code{include_tips =
@@ -16,7 +13,7 @@
 #' combination at the terminal nodes.
 #'
 #' @export
-joint_probs <- function(x, y, x_tips = NULL, y_tips = NULL, include_tips = TRUE) {
+joint_probs <- function(x, y, x_tips = NULL, y_tips = NULL) {
   # Start by finding out how large the resultant matrix will need to be
   num_combinations <- ncol(x) * ncol(y)
 

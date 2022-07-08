@@ -1,12 +1,12 @@
-#' Create a data frame object for character state through time plot
+#' Data frame of character state through time
 #'
 #' @param tree a phylogenetic tree object.
 #' @param anc_states matrix of ancestral state probabilities, generally the
-#' \code{states} element of a \code{rayDISC} object.
+#' \code{states} element of a \code{corHMM} object.
 #' @param tip_states matrix of states for tip taxa, can be the \code{tip.states}
-#' element of a \code{rayDISC} object.
+#' element of a \code{corHMM} object.
 #' @param state_index integer the index representing the state of interest in
-#' the \code{rayDISC$tip.states} and \code{rayDISC$states} objects. Default is
+#' the \code{corHMM$tip.states} and \code{corHMM$states} objects. Default is
 #' 1.
 #' @param contemporary_age numeric cutoff for determining age of nodes to
 #' consider as contemporary. Defaults to 1.0e-10.
@@ -15,6 +15,8 @@
 #' plotting the character state of interest through time.
 #'
 #' @importFrom ape node.depth.edgelength
+#' @import dplyr
+#'
 #' @export
 stt_data <- function(tree, anc_states, tip_states, state_index = 1, contemporary_age = 1.0e-10) {
   # Want a table with:
@@ -74,12 +76,18 @@ stt_data <- function(tree, anc_states, tip_states, state_index = 1, contemporary
   # contemporary rows, and (5) add a single entry to represent all contemporary
   # nodes
 
+  # TODO: Combine steps 2 & 3 with pipes
   # (2) identify those contemporary rows
-  contemporary_df <- age_state_df[age_state_df$node_age <= contemporary_age, ]
+  contemporary_df <- age_state_df %>%
+    filter(node_age <= contemporary_age)
+
   # (3) find the max value from those
   contemporary_point <- max(contemporary_df$lineage_count)
+
   # (4) drop all contemporary rows
-  plot_age_states <- age_state_df[age_state_df$node_age > contemporary_age, ]
+  plot_age_states <- age_state_df %>%
+    filter(node_age > contemporary_age)
+
   # (5) add a single entry to represent all contemporary nodes
   plot_age_states[nrow(plot_age_states) + 1, ] <- NA
   plot_age_states$lineage_count[nrow(plot_age_states)] <- contemporary_point
