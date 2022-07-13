@@ -1,0 +1,44 @@
+#NEXUS
+
+BEGIN TAXA;
+	DIMENSIONS NTAX=10;
+	TAXLABELS
+		taxon_6 taxon_3 taxon_1 taxon_4 taxon_5 taxon_2 taxon_7 taxon_8 taxon_9 taxon_10
+	;
+END;
+
+BEGIN DATA;
+	DIMENSIONS  NCHAR=2;
+	FORMAT DATATYPE = STANDARD GAP = - MISSING = ? SYMBOLS = "  0 1";
+	MATRIX
+	taxon_6   01
+	taxon_3   10
+	taxon_1   11
+	taxon_4   10
+	taxon_5   01
+	taxon_2   10
+	taxon_7   00
+	taxon_8   00
+	taxon_9   00
+	taxon_10  00
+
+;
+
+END;
+
+BEGIN TREES;
+	LINK Taxa = Taxa;
+	TRANSLATE
+[0] 		n0 taxon_6,
+[1] 		n1 taxon_3,
+[2] 		n2 taxon_1,
+[3] 		n3 taxon_4,
+[4] 		n4 taxon_5,
+[5] 		n5 taxon_2,
+[6] 		n6 taxon_7,
+[7] 		n7 taxon_8,
+[8] 		n8 taxon_9,
+[9] 		n9 taxon_10;
+	TREE tree1 = (n2:61.130614581465984,(n5:60.110879132700596,((n1:57.32014894051737,n3:57.32014894051737):1.5569947797269705,(((((n4:5.294371341541925,n0:5.294371341541925):26.43011287327247,n6:31.724484214814396):13.779142259632287,n7:45.50362647444668):6.556519724654557,n8:52.06014619910124):3.538737658815826,n9:55.598883857917066):3.2782598623272747):1.2337354124562552):1.0197354487653882):1;
+
+END;
