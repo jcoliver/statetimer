@@ -86,7 +86,11 @@ our final value of the number of lineages at the base of the tree ($t_{R}$) is:
 $$
 S_{i,j} = 1.0 - (1.0 + 0.0) + 0.0 = 0.0
 $$
-![Figure 1](algorithm-example-1.svg)
+
+```{r figure-1, echo = FALSE}
+
+```
+
 
 ## Example 2
 
@@ -152,7 +156,48 @@ lineages with state $i$ at time $t_{R}$, with $S_{i,j-1} = 1.2$ is:
 $$
 S_{i,j} = 1.2 - (1.0 + 0.5) + 0.5 = 0.2
 $$
-![Figure 2](algorithm-example-2.svg)
+
+```{r figure-2, echo = FALSE, fig.align = "center", fig.width = 6, fig.height = 6}
+suppressPackageStartupMessages(library(ape))
+suppressPackageStartupMessages(library(corHMM))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(statetimer))
+# Read tree in
+# TODO: update this to read from package file?
+data_file <- "../inst/extdata/stt-data.nex"
+tree <- ape::read.nexus(file = data_file)
+
+# Read data in
+trait_data <- ape::read.nexus.data(file = data_file)
+trait_data <- dplyr::bind_rows(trait_data)
+trait_data <- as.data.frame(t(trait_data))
+trait_data <- cbind(rownames(trait_data), trait_data)
+colnames(trait_data) <- c("taxon", "t1", "t2")
+
+# Re-order data for subsequent plots
+trait_data <- trait_data[tree$tip.label, ]
+
+# Do ancestral state reconstruction
+# Need to suppress messaging, hence invisible and capture.output
+invisible(
+  capture.output(
+    er_model <- corHMM::corHMM(phy = tree,
+                               data = trait_data[, c("taxon", "t1")],
+                               rate.cat = 1,
+                               node.states = "marginal",
+                               model = "ER")
+  )
+)
+
+# Plot tree with ancestral states
+plot(tree, label.offset = 1.5)
+tiplabels(pch = 21, bg = trait_data[, "t1"], cex = 2)
+nodelabels(pie = er_model$states, piecol = c(0, 1), cex = 0.5)
+
+# Do stt plot
+
+
+```
 
 # Usage
 
